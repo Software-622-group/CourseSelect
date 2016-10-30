@@ -42,7 +42,14 @@ class CoursesController < ApplicationController
     flash={:success => "成功删除课程: #{@course.name}"}
     redirect_to courses_path, flash: flash
   end
-
+  
+  def quit
+    @course=Course.find_by_id(params[:id])
+    current_user.courses.delete(@course)
+    flash={:success => "成功退选课程: #{@course.name}"}
+    redirect_to courses_path, flash: flash
+  end
+  
   #-------------------------for students----------------------
 
   def list
@@ -50,19 +57,24 @@ class CoursesController < ApplicationController
     @course=@course-current_user.courses
   end
 
+
+
   def select
     @course=Course.find_by_id(params[:id])
-    current_user.courses<<@course
-    flash={:success => "成功选择课程: #{@course.name}"}
-    redirect_to courses_path, flash: flash
+    if (@course.limit_num > @course.student_num) ||  (@course.limit_num == 0)
+      current_user.courses<<@course
+      @course.student_num += 1
+      @course.save
+      flash={:success => "成功选择课程: #{@course.name}"}
+      redirect_to courses_path, flash: flash
+    else
+      flash={:warning => "选课人数已满: #{@course.name}"}
+      redirect_to courses_path, flash: flash
+    end
   end
+  
+ 
 
-  def quit
-    @course=Course.find_by_id(params[:id])
-    current_user.courses.delete(@course)
-    flash={:success => "成功退选课程: #{@course.name}"}
-    redirect_to courses_path, flash: flash
-  end
 
 
   #-------------------------for both teachers and students----------------------
