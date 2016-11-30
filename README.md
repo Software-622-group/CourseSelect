@@ -5,7 +5,7 @@
 
 这个样本系统是基于国科大研究生课程 (高级软件工程) 开发的项目,目的是帮助入门者学习RoR (Ruby on Rails) 
 
-适合新学者的入手的第一个项目 ([演示Demo戳这里](https://courseselect.herokuapp.com/ ))，入门者可以在这个样本系统上增加更多的功能:
+适合新学者的入手的第一个项目 ([演示Demo戳这里](https://group-work.herokuapp.com/ ))，入门者可以在这个样本系统上增加更多的功能:
 
 * 处理选课冲突、控制选课人数
 * 统计选课学分，学位课等
@@ -23,6 +23,11 @@
 * 老师动态增加，删除课程
 * 老师对课程下的学生添加、修改成绩
 * 权限控制：老师和学生只能看到自己相关课程信息
+* 统计已选总学分
+* 学生选课后可以查看自己的课程表
+* 老师对课程控制开放、关闭按钮
+* Excel格式的数据导入
+* 绑定用户邮箱（实现注册激活，忘记密码等）
 
 ### 截图
 
@@ -52,7 +57,7 @@
 在终端（MacOS或Linux）中执行以下代码
 
 ```
-$ git clone https://github.com/PENGZhaoqing/CourseSelect
+$ git clone https://github.com/Software-622-group/CourseSelect
 $ cd CourseSelect
 $ bundle install
 $ rake db:migrate
