@@ -4,6 +4,8 @@ class CoursesController < ApplicationController
   before_action :teacher_logged_in, only: [:new, :create, :edit, :destroy, :update]
   before_action :logged_in, only: :index
 #/-------------------------------------------------I add these cmments-
+  def show
+  end
   def show_owned
     @course=current_user.courses
 
@@ -89,7 +91,7 @@ class CoursesController < ApplicationController
     @course.each do
       |course|
       if course.course_open==true
-        openedcourses<<course
+        openedcourses<< course
       end
     end
     @course.clear
