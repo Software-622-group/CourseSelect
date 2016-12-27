@@ -29,13 +29,25 @@
             </thead>
             <tbody>
 
-            <% @course.each do |course|
-
+            <% 
+            @course.each do |course|
+                  
             %>
                 <tr>
 
                   <td><%= course.course_code %></td>
-                  <td><%= course.name %></td>
+                  
+                 
+                  <td>
+                    
+                <%= link_to  show_describtion_course_url(course) do%>
+                
+                  <%= course.name %>
+                  <% end %>
+        
+                   </td>
+                  
+                  
                   <td><%= course.credit %></td>
                   <td><%= course.limit_num %></td>
                   <td><%= course.student_num %></td>
@@ -72,7 +84,7 @@
 
                 </tr>
             <%
-                  
+              
             %>
             <% end %>
             </tbody>

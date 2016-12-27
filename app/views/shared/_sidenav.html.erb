@@ -40,14 +40,14 @@
                   <span class="glyphicon glyphicon-chevron-right"></span> 选修课程
                   <span class="label label-info pull-right">
                     <%
-                      leftcourse=[]
-                      for nowcourse in (Course.all-current_user.courses)
-                         if nowcourse.course_open==true
-                           leftcourse<<nowcourse
+                      sum=0
+                      for course in (Course.all-current_user.courses)
+                         if course.course_open==true
+                            sum=sum+1
                            end
                       end
 
-                    %><%= leftcourse.length %></span>
+                    %><%= sum %></span>
               <% end %>
             </li>
             <li class="list-group-item">

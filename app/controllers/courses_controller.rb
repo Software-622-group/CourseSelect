@@ -4,42 +4,15 @@ class CoursesController < ApplicationController
   before_action :teacher_logged_in, only: [:new, :create, :edit, :destroy, :update]
   before_action :logged_in, only: :index
 #/-------------------------------------------------I add these cmments-
+def show_describtion
+     @course=Course.find_by_id(params[:id])
+end
   def show_owned
     @course=current_user.courses
 
     #对课程进行排序
     @course=@course.sort_by{|e| e[:course_time]}
   end
-
-  #添加对于课程的开放与否的控制
-  def open
-    @course =Course.find_by_id(params[:id])
-
-    #@course.each do
-    #|course|
-    #  course.course_open=true
-    #end
-
-    if @course.update_attributes(:course_open=>"true")
-      redirect_to courses_path, flash: {:success => "已经成功开启该课程:#{ @course.name}"}
-    else
-      redirect_to courses_path,flash:{:danger => "#{@course.name} 开启课程失败！"}
-    end
-
-  end
-
-  def close
-
-    @course = Course.find_by_id(params[:id])
-
-    if @course.update_attributes(:course_open=>"false")
-      redirect_to courses_path, flash: {:success => "已经成功关闭该课程:#{ @course.name}"}
-    else
-      redirect_to courses_path,flash:{:danger => "#{@course.name} 关闭课程失败！"}
-    end
-
-  end
-
   #-------------------------for teachers----------------------
 
   def new
@@ -84,26 +57,47 @@ class CoursesController < ApplicationController
   def list
     @course=Course.all
     @course=@course-current_user.courses
-    #添加是否开课
-    openedcourses=[]
-    @course.each do
-      |course|
-      if course.course_open==true
-        openedcourses<<course
-      end
-    end
-    @course.clear
-    @course=openedcourses
+
     #对课程进行排序
     @course=@course.sort_by{|e| e[:course_time]}
+    
+   open_course=[]
+    j=0
+   for i in(0..@course.length-1) 
+      if @course[i].course_open==true
+        open_course[j]=@course[i]
+        j=j+1
+      end
+   end
+    @course=[]
+    @course=open_course
   end
 
+   def open
+    @course =Course.find_by_id(params[:id])
+
+    if @course.update_attributes(:course_open=>true)
+      redirect_to courses_path, flash: {:success => "已经成功开启课程:#{ @course.name}"}
+    end
+
+  end
+
+
+
+  def close
+    #填写你的代码
+      @course =Course.find_by_id(params[:id])
+
+    if @course.update_attributes(:course_open=>false)
+      redirect_to courses_path, flash: {:success => "已经成功关闭该课程:#{ @course.name}"}
+    end
+
+end
 
   ####1系统启动的时候 调用select和qquit方法 登录的的账户的信息得以从数据iu中加载出来
 
   def select
     @course=Course.find_by_id(params[:id])
-
     flag=false
     current_user.courses.each do
         |nowcourse|
@@ -121,8 +115,6 @@ class CoursesController < ApplicationController
       flash={:danger =>"#{@course.name} 已经添加到您的选课中，请选择其他课程!"}
       redirect_to courses_path, flash: flash
     end
-
-    #计算开课
   end
 
   def quit
@@ -166,7 +158,7 @@ class CoursesController < ApplicationController
 
   def course_params
     params.require(:course).permit(:course_code, :name, :course_type, :teaching_type, :exam_type,
-                                   :credit, :limit_num, :class_room, :course_time, :course_week,:course_open)
+                                   :credit, :limit_num, :class_room, :course_time, :course_week)
   end
 
 end
