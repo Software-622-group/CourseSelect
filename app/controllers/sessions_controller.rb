@@ -8,7 +8,7 @@ class SessionsController < ApplicationController
         log_in user
         params[:session][:remember_me] == '1' ? remember_user(user) : forget_user(user)
         # flash= {:info => "欢迎回来: #{user.name} :)"}
-        redirect_back_or user
+        redirect_to user
       else
         message = "Account not activated."
         message+="Check your email for the activation link"

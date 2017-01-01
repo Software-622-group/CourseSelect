@@ -7,7 +7,7 @@ class PasswordResetsController < ApplicationController
   end
   
   def create
-    @user = User.find_by(params[:password_reset][:email].downcase)
+    @user = User.find_by(email: params[:password_reset][:email].downcase)
     if @user
       @user.create_reset_digest
       @user.send_password_reset_email
@@ -42,7 +42,7 @@ class PasswordResetsController < ApplicationController
   end
   #确保有效用户
   def valid_user
-    unless (@user && @user.activated? && @user.authencatied?(:reset, params[:id]))
+    unless (@user && @user.activated? && @user.authenticated?(:reset, params[:id]))
     redirect_to root_url
     end
   end
@@ -50,7 +50,7 @@ class PasswordResetsController < ApplicationController
     params.require(:user).permit(:password, :password_confirmation)
   end
   #如果密码和密码确认都确认为空，返回true
-  def both_passwords_blank
+  def both_passwords_blank?
     params[:user][:password].blank? && params[:user][:password_confirmation].blank?
   end
   #检查令牌是否过期
