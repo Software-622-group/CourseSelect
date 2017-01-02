@@ -51,7 +51,7 @@ class CoursesController < ApplicationController
   def create
     @course = Course.new(course_params)
     if @course.save
-      current_user.teaching_courses<<@course
+      current_user.teaching_courses<< @course
       redirect_to courses_path, flash: {success: "新课程申请成功"}
     else
       flash[:warning] = "信息填写有误,请重试"
@@ -82,7 +82,11 @@ class CoursesController < ApplicationController
   end
 
   #-------------------------for students----------------------
-
+  def select
+    @course=Course.find_by_id(params[:id])
+    
+  end
+  
   def list
     @course=Course.all
     @course=@course-current_user.courses
@@ -101,28 +105,70 @@ class CoursesController < ApplicationController
   end
 
 
-  ####1系统启动的时候 调用select和qquit方法 登录的的账户的信息得以从数据iu中加载出来
+ ####1系统启动的时候 调用select和quit方法 登录的的账户的信息得以从数据iu中加载出来
 
   def select
     @course=Course.find_by_id(params[:id])
 
     flag=false
+    flag1=false
+    flag2=false
     current_user.courses.each do
         |nowcourse|
         if nowcourse.name==@course.name
           flag=true
           break
         end
+
+        if nowcourse.course_time[1]==@course.course_time[1]
+          key1 =nowcourse.course_time[2..3].to_i
+          key2 =nowcourse.course_time[4..5].to_i
+          key3 =@course.course_time[2..3].to_i
+          key4 =@course.course_time[4..5].to_i
+          if ((key2 <=key4)and(key2>=key3)) or ((key2>key4 and key1<=key4))
+            flag1=true
+            break
+          end
+        end
     end
+
+
+
+    if (@course.limit_num > @course.student_num) ||  (@course.limit_num == 0)
+
+      flag2=true
+    end
+
     if flag==false
-      current_user.courses<<@course  ##把该用户的课程信息添加到表示当前用户变量的
+      if flag1==false and flag2==true
+
+        @course.student_num += 1
+        @course.save
+        current_user.courses<< @course  ##把该用户的课程信息添加到表示当前用户变量的
                                    ##current_user中 方便之后使用。
-      flash={:success => "成功选择课程: #{@course.name}"}
-      redirect_to courses_path, flash: flash
+        flash={:success => "成功选择课程: #{@course.name}"}
+        redirect_to courses_path, flash: flash
+      else
+        flash={:danger =>"#{@course.name} 选课失败，课程选课时间冲突，请选择其他课程! "}
+        redirect_to courses_path, flash: flash
+      end
+
     else
-      flash={:danger =>"#{@course.name} 已经添加到您的选课中，请选择其他课程!"}
-      redirect_to courses_path, flash: flash
+      if flag==true
+        flash={:danger =>"#{@course.name} 选课失败，同课程名冲突，请选择其他课程! "}
+        redirect_to courses_path, flash: flash
+      elsif flag2==false
+                flash={:warning => "选课人数已满: #{@course.name} 无法选课" }
+                redirect_to courses_path, flash: flash
+      end
+
+
     end
+
+
+
+
+    #计算开课
   end
 
   def quit
