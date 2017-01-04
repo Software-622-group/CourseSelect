@@ -43,7 +43,12 @@
                 <tr>
 
                   <td><%= course.course_code %></td>
-                  <td><%= course.name %></td>
+                  <td> <%= link_to  show_describtion_course_url(course) do%>
+                
+                  <%= course.name %>
+                  <% end %>
+                  
+                  </td>
                   <td><%= course.credit %></td>
                   <td><%= course.exam_type %></td>
                   <td><%= course.teacher.name %></td>

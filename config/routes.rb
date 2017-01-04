@@ -28,6 +28,8 @@ Rails.application.routes.draw do
     collection do
       get :list
       get :show_owned
+      get :describtion
+      
 
 
     end
