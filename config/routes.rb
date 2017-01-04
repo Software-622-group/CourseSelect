@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  get 'password_resets/new'
+
+  get 'password_resets/edit'
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
@@ -37,10 +41,14 @@ Rails.application.routes.draw do
 
   resources :grades, only: [:index, :update]
   resources :users
+  resources :account_activations, only: [:edit]
+  resources :password_resets, only: [:new, :create, :edit, :update]
 
   get 'sessions/login' => 'sessions#new'
   post 'sessions/login' => 'sessions#create'
   delete 'sessions/logout' => 'sessions#destroy'
+  get '/auth/:provider/callback' => 'sessions#create_oauth'
+  get '/auth/failure' => 'sessions#failure'
 
 
   # Example resource route with options:

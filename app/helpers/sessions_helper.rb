@@ -11,7 +11,16 @@ module SessionsHelper
   def student_logged_in?
     !current_user.nil? && !current_user.teacher && !current_user.admin
   end
-
+  
+  def oauth_log_in
+    oauth_logged_in?  
+  end
+  
+  def oauth_logged_in?
+    auth_hash = request.env['omniauth.auth']
+    !auth_hash.nil?
+  end
+  
   def teacher_logged_in?
     !current_user.nil? && current_user.teacher
   end
@@ -31,10 +40,10 @@ module SessionsHelper
 
   # Returns the user corresponding to the remember token cookie.
   def current_user
-    if session[:user_id]
-      @current_user||= User.find_by(id: session[:user_id])
-    elsif cookies.signed[:user_id]
-      user = User.find_by(id: cookies.signed[:user_id])
+    if (user_id = session[:user_id])
+      @current_user||= User.find_by(id: user_id)
+    elsif (user_id = cookies.signed[:user_id])
+      user = User.find_by(id: user_id)
       if user && user.user_authenticated?(:remember, cookies[:remember_token])
         log_in user
         @current_user = user

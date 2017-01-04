@@ -5,6 +5,9 @@ gem 'bootstrap-sass', '~> 3.3.7'
 # Use ActiveModel has_secure_password
 gem 'bcrypt', '~> 3.1.11'
 gem 'faker', '~> 1.6.3'
+gem 'omniauth'
+gem "omniauth-oauth2"
+gem "omniauth-weibo-oauth2"
 gem 'rails_admin', '~> 0.8.1'
 #this is a third version
 # gem 'carrierwave'
@@ -64,6 +67,7 @@ end
 
 group :production do
   gem 'rails_12factor'
+  #gem 'web-console', '~> 2.0'
 end
 
 
